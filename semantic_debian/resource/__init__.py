@@ -1,2 +1,2 @@
 
-__all__ = ['project']
+__all__ = ['project', 'package', 'contributor']
