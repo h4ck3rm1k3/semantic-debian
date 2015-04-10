@@ -1,7 +1,17 @@
 
-This repository holds the code that is used to run the service at:
+Semantic Debian
+===============
 
-  http://rdf.debian.net
+This repository holds the code that is used to run the service at: 
+http://rdf.debian.net
+
+Semantic Debian is written in Python and translates data from UDD into RDF.
+
+The update-from-udd.py script generates a file semdeb.ttl containing the full
+RDF graph.
+
+Individual resources can be queried using the classes found in the
+semantic_debian.resources module.
 
 Contact: Iain R. Learmonth <irl@fsfe.org> or #debian-qa on irc.debian.org.
 
