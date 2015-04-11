@@ -1,14 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
 <ul>
+	<h1>Semantic Debian</h1>
 	{% for s in triples %}
-	<li>{{ s }}</li>
-	<ul>
+	<h2>{{ s }}</h2>
+	<table>
 		{% for p in triples[s] %}
-		<li>{{ namespace_manager.compute_qname(p[1])[0] }}:{{ namespace_manager.compute_qname(p[1])[2] }}</li>
-		<ul><li>{{ p[2] }}</li></ul>
+		<tr>
+		<td>{{ namespace_manager.compute_qname(p[1])[0] }}:{{ namespace_manager.compute_qname(p[1])[2] }}</td>
+		<td>{{ p[2] }}</td>
+		</tr>
 		{% endfor %}
-	</ul>
+	</table>
 	{% endfor %}
 </ul>
 {% endblock content %}

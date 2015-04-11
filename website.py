@@ -16,7 +16,7 @@ def negotiate(accept):
         return "ttl"
     if "application/rdf+xml" in accept:
         return "xml"
-    return "ttl"
+    return "html"
 
 @app.route("/project/<name>.ttl")
 def project_turtle(name):
@@ -59,14 +59,6 @@ def project_html(name):
     p = Project(PROJECT[name])
     for triple in p.triples:
         g.add(triple)
-    for package in p.getPackages():
-        pa = Package(package)
-        for triple in pa.triples:
-            g.add(triple)
-    for maintainer in p.getContributors():
-        c = Maintainer(maintainer)
-        for triple in c.triples:
-            g.add(triple)
     triples = {}
     for s in set(g.subjects()):
         triples[s] = g.triples((s, None, None))
@@ -75,11 +67,12 @@ def project_html(name):
 @app.route("/project/<name>")
 def project(name):
     f = negotiate(request.headers.get('Accept'))
-    print "Decided to " + f
     if f == 'xml':
         return redirect(url_for('project_rdfxml', name=name), code=303)
     if f == 'ttl':
         return redirect(url_for('project_turtle', name=name), code=303)
+    if f == 'html':
+        return redirect(url_for('project_html', name=name), code=303)
 
 @app.route("/")
 def homepage():
