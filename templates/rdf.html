@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<ul>
+	{% for s in triples %}
+	<li>{{ s }}</li>
+	<ul>
+		{% for p in triples[s] %}
+		<li>{{ namespace_manager.compute_qname(p[1])[0] }}:{{ namespace_manager.compute_qname(p[1])[2] }}</li>
+		<ul><li>{{ p[2] }}</li></ul>
+		{% endfor %}
+	</ul>
+	{% endfor %}
+</ul>
+{% endblock content %}

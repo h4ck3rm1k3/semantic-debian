@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Semantic Debian</h1>
+    <h2>URLs</h2>
+    <p><i>Note: These are subject to change without much notice at this point.</i></p>
+    <p>The webserver on <tt>rdf.debian.net</tt> uses content negotiation to return a 303 redirect to either a Turtle or RDF/XML representation of the requested resource. In the future, an HTML view may also be provided.</p>
+    <dl>
+    <dt>Packaging Project</dt>
+    <dd><tt>http://rdf.debian.net/project/&lt;source-pkg-name&gt;</tt></dd>
+    <dt>Maintainer (not yet implemented)</dt>
+    <dd><tt>http://rdf.debian.net/maintainer/&lt;url-encoded-email&gt;</tt></dd>
+    </dl>
+    <h2>Examples</h2>
+    <h3>Packaging Project (Turtle Output)</h3>
+    <pre>$ curl --header "Accept: text/turtle" -L http://rdf.debian.net/project/direwolf
+@prefix adms: &lt;http://www.w3.org/ns/adms#&gt; .
+@prefix admssw: &lt;http://purl.org/adms/sw/&gt; .
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
+@prefix doap: &lt;http://usefulinc.com/ns/doap#&gt; .
+@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix schema: &lt;http://schema.org/&gt; .
+@prefix spdx: &lt;http://www.spdx.org/rdf/terms#&gt; .
+@prefix xml: &lt;http://www.w3.org/XML/1998/namespace&gt; .
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+
+&lt;http://rdf.debian.net/project/direwolf&gt; a foaf:Document ;
+    foaf:primaryTopic &lt;http://rdf.debian.net/project/direwolf#project&gt; .
+
+&lt;http://rdf.debian.net/project/direwolf#project&gt; a admssw:SoftwareProject ;
+    schema:contributor [ a foaf:Agent ;
+            owl:sameAs &lt;http://webid.debian.net/maintainers/debian-hams%40lists.debian.org#account&gt; ;
+            foaf:mbox &lt;mailto:debian-hams@lists.debian.org&gt; ;
+            foaf:mbox_sha1sum "7210e2b55246ee859366230188fa6231e089a40b" ;
+            foaf:name "Debian Hamradio Maintainers" ] ;
+    doap:description "Maintenance of the direwolf source package in Debian" ;
+    doap:homepage &lt;http://packages.debian.org/src:direwolf&gt;,
+        &lt;http://tracker.debian.org/pkg/direwolf&gt; ;
+    doap:name "Debian direwolf packaging" ;
+    foaf:primaryTopicOf &lt;http://rdf.debian.net/project/direwolf&gt; .</pre>
+
+    <h3>Packaging Project (RDF/XML Output)</h3>
+    <pre>$ curl --header "Accept: application/rdf+xml" -L http://rdf.debian.net/project/direwolf                                       
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;rdf:RDF
+   xmlns:doap="http://usefulinc.com/ns/doap#"
+   xmlns:foaf="http://xmlns.com/foaf/0.1/"
+   xmlns:owl="http://www.w3.org/2002/07/owl#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:schema="http://schema.org/"
+&gt;
+  &lt;rdf:Description rdf:about="http://rdf.debian.net/project/direwolf"&gt;
+    &lt;rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Document"/&gt;
+    &lt;foaf:primaryTopic rdf:resource="http://rdf.debian.net/project/direwolf#project"/&gt;
+  &lt;/rdf:Description&gt;
+  &lt;rdf:Description rdf:about="http://rdf.debian.net/project/direwolf#project"&gt;
+    &lt;doap:name&gt;Debian direwolf packaging&lt;/doap:name&gt;
+    &lt;doap:description&gt;Maintenance of the direwolf source package in Debian&lt;/doap:description&gt;
+    &lt;doap:homepage rdf:resource="http://tracker.debian.org/pkg/direwolf"/&gt;
+    &lt;rdf:type rdf:resource="http://purl.org/adms/sw/SoftwareProject"/&gt;
+    &lt;foaf:primaryTopicOf rdf:resource="http://rdf.debian.net/project/direwolf"/&gt;
+    &lt;doap:homepage rdf:resource="http://packages.debian.org/src:direwolf"/&gt;
+    &lt;schema:contributor rdf:nodeID="Nec70333f712843378bbb3f0327ddc4f1"/&gt;
+  &lt;/rdf:Description&gt;
+  &lt;rdf:Description rdf:nodeID="Nec70333f712843378bbb3f0327ddc4f1"&gt;
+    &lt;foaf:name&gt;Debian Hamradio Maintainers&lt;/foaf:name&gt;
+    &lt;rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Agent"/&gt;
+    &lt;foaf:mbox rdf:resource="mailto:debian-hams@lists.debian.org"/&gt;
+    &lt;foaf:mbox_sha1sum&gt;7210e2b55246ee859366230188fa6231e089a40b&lt;/foaf:mbox_sha1sum&gt;
+    &lt;owl:sameAs rdf:resource="http://webid.debian.net/maintainers/debian-hams%40lists.debian.org#account"/&gt;
+  &lt;/rdf:Description&gt;
+&lt;/rdf:RDF&gt;</pre>
+    <br />
+{% endblock content %}

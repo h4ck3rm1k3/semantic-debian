@@ -1,0 +1,49 @@
+<html>
+<head>
+	<title>{% if title %}{{ title }} &middot; {% endif %}Semantic Debian</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="robots" content="noindex" />
+<link href="/static/css/debian.css" rel="stylesheet" type="text/css">
+<link href="/static/css/rdf.css" rel="stylesheet" type="text/css">
+<link rel="shortcut icon" href="/static/img/favicon.ico">
+</head>
+<body>
+<div id="header">
+  <div id="wikisection">
+    <p class="section"><a href="/" title="Semantic Debian">Semantic Debian</a></p>
+  </div>
+  <div id="upperheader">
+    <div id="logo">
+        <a href="http://www.debian.org" title="Debian Home"><img src="/static/img/openlogo-50.png" alt="Debian" width="50" height="61"></a>
+    </div>
+  </div> <!-- end upperheader -->
+  <div id="navbar">
+    <p class="hidecss"><a href="#content">Skip Quicknav</a></p>
+    <ul>
+       <li><a href="/">Semantic Debian</a></li>
+       <li><a href="/urls">URLs</a></li>
+    </ul>
+  </div> <!-- end navbar -->
+  <p id="breadcrumbs">&nbsp;Semantic Debian{% if breadcrumb %}{{ breadcrumb }}{% endif %}</p>
+</div>
+
+<div id="content"> 
+	{% block content %}
+	{% endblock content %}
+</div>
+
+<div id="footer">
+<div id="fineprint">
+    <p>
+    This service is still a work in progress, please expect it to be broken.
+    <br />
+    Contact: <a href="mailto:irl@fsfe.org">Iain R. Learmonth</a> or #debian-qa on irc.debian.org.
+    <br />
+    Debian is a registered trademark of <a href="http://www.spi-inc.org/">Software in the Public Interest</a>.
+    </p>
+</div>
+</div>
+
+</body>
+</html>
+
