@@ -12,6 +12,7 @@ from semantic_debian.core.namespaces import RELEASE, PACKAGE
 from semantic_debian.core.namespaces import DOAP
 from semantic_debian.core.store import graph
 from semantic_debian.views import project_view, maintainer_view
+from semantic_debian.views import release_view, package_view
 
 app = Flask(__name__)
 
@@ -94,7 +95,7 @@ def maintainer_rdfxml(email):
 @app.route("/maintainer/<email>.html")
 def maintainer_html(email):
     resource = resource_template(MAINTAINER[quote(email)])
-    return render_template('rdf.html', resource=resource, title="%s (packaging project)" % (email,), breadcrumb=" / browse / project / %s" % (email,))
+    return render_template('rdf.html', resource=resource, title="%s (Debian contributor)" % (email,), breadcrumb=" / browse / project / %s" % (email,))
 
 @app.route("/maintainer/<email>")
 def maintainer(email):
@@ -129,7 +130,7 @@ def package_rdfxml(name):
 @app.route("/package/<name>.html")
 def package_html(name):
     resource = resource_template(PACKAGE[name])
-    return render_template('rdf.html', resource=resource, title="%s (packaging package)" % (name,), breadcrumb=" / browse / package / %s" % (name,))
+    return render_template('rdf.html', resource=resource, title="%s (package release)" % (name,), breadcrumb=" / browse / package / %s" % (name,))
 
 @app.route("/package/<name>")
 def package(name):
@@ -156,7 +157,7 @@ def release_rdfxml(name):
 @app.route("/release/<name>.html")
 def release_html(name):
     resource = resource_template(RELEASE[name])
-    return render_template('rdf.html', resource=resource, title="%s (packaging release)" % (name,), breadcrumb=" / browse / release / %s" % (name,))
+    return render_template('rdf.html', resource=resource, title="%s (Debian release)" % (name,), breadcrumb=" / browse / release / %s" % (name,))
 
 @app.route("/release/<name>")
 def release(name):
