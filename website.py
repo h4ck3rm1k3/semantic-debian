@@ -36,7 +36,10 @@ def resource_template(uri):
     for p, o in r.predicate_objects():
         if isinstance(o, Resource):
             o_type = "resource"
-            o_qname = o.qname() if not o.qname().startswith('ns') else o.identifier
+            try:
+                o_qname = o.qname() if not o.qname().startswith('ns') else o.identifier
+            except:
+                o_qname = o.identifier
             o_value = o.identifier
         else:
             o_type = "literal"
