@@ -2,16 +2,15 @@
 {% block content %}
 <ul>
 	<h1>Semantic Debian</h1>
-	{% for s in triples %}
-	<h2>{{ s }}</h2>
+	<h2><a href="{{ resource.uri }}" title="{{ resource.uri }}" style="color: #000; border-bottom: 1px dotted #000; text-decoration: none;">{{ resource.name }}</a></h2>
+	<p>{{ resource.description }}</p>
 	<table>
-		{% for p in triples[s] %}
+		{% for predicate_uri, predicate_qname, object_type, object_qname, object_value in resource.p_o %}
 		<tr>
-		<td>{{ namespace_manager.compute_qname(p[1])[0] }}:{{ namespace_manager.compute_qname(p[1])[2] }}</td>
-		<td>{{ p[2] }}</td>
+			<td><a href="{{ predicate_uri }}">{{ predicate_qname }}</a></td>
+			<td>{% if object_type == "literal" %}{{ object_value }}{% else %}<a href="{{ object_value }}">{{ object_qname }}</a>{% endif %}</td>
 		</tr>
 		{% endfor %}
 	</table>
-	{% endfor %}
 </ul>
 {% endblock content %}
