@@ -20,6 +20,9 @@ def project_view(uri):
     for k in [x.identifier for x in p[DOAP.developer]]:
         for triple in graph.triples( (k, None, None) ):
             g.add(triple)
+    for k in [x.identifier for x in p[DOAP.repository]]:
+        for triple in graph.triples( (k, None, None) ):
+            g.add(triple)
     return g
 
 def maintainer_view(uri):
