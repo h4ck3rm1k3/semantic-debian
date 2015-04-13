@@ -17,7 +17,8 @@ if 'namespace_manager' not in vars():
     MAINTAINER = Namespace(base_url + "maintainer/")
     TRACKER    = Namespace("http://tracker.debian.org/pkg/")
     SRCPKG     = Namespace("http://packages.debian.org/src:")
-
+    SCREENSHOTS= Namespace("http://screenshots.debian.net/package/")
+    DDPO       = Namespace("https://qa.debian.org/developer.php?login=")
     namespace_manager = NamespaceManager(Graph())
 
     namespace_manager.bind('adms', ADMS, override=False)

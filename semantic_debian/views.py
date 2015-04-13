@@ -14,7 +14,10 @@ def project_view(uri):
     for k in [x.identifier for x in p[DOAP.release]]:
         for triple in graph.triples( (k, None, None) ):
             g.add(triple)
-    for k in [x.identifier for x in p[DOAP.contributor]]:
+    for k in [x.identifier for x in p[DOAP.maintainer]]:
+        for triple in graph.triples( (k, None, None) ):
+            g.add(triple)
+    for k in [x.identifier for x in p[DOAP.developer]]:
         for triple in graph.triples( (k, None, None) ):
             g.add(triple)
     return g

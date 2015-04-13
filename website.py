@@ -17,7 +17,7 @@ from semantic_debian.views import release_view, package_view
 app = Flask(__name__)
 
 def negotiate(accept):
-    if "text/turtle" in accept:
+    if "text/plain" in accept:
         return "ttl"
     if "application/rdf+xml" in accept:
         return "xml"
@@ -58,7 +58,7 @@ def resource_template(uri):
 @app.route("/project/<name>.ttl")
 def project_turtle(name):
     v = project_view(PROJECT[name])
-    return Response(v.serialize(format='turtle'), mimetype="text/turtle")
+    return Response(v.serialize(format='turtle'), mimetype="text/plain")
 
 @app.route("/project/<name>.xml")
 def project_rdfxml(name):
@@ -85,7 +85,7 @@ def project(name):
 @app.route("/maintainer/<email>.ttl")
 def maintainer_turtle(email):
     v = maintainer_view(MAINTAINER[quote(email)])
-    return Response(v.serialize(format='turtle'), mimetype="text/turtle")
+    return Response(v.serialize(format='turtle'), mimetype="text/plain")
 
 @app.route("/maintainer/<email>.xml")
 def maintainer_rdfxml(email):
@@ -120,7 +120,7 @@ def urls():
 @app.route("/package/<name>.ttl")
 def package_turtle(name):
     v = package_view(PACKAGE[name])
-    return Response(v.serialize(format='turtle'), mimetype="text/turtle")
+    return Response(v.serialize(format='turtle'), mimetype="text/plain")
 
 @app.route("/package/<name>.xml")
 def package_rdfxml(name):
@@ -147,7 +147,7 @@ def package(name):
 @app.route("/release/<name>.ttl")
 def release_turtle(name):
     v = release_view(RELEASE[name])
-    return Response(v.serialize(format='turtle'), mimetype="text/turtle")
+    return Response(v.serialize(format='turtle'), mimetype="text/plain")
 
 @app.route("/release/<name>.xml")
 def release_rdfxml(name):
