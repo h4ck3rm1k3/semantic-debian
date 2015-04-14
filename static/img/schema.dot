@@ -15,6 +15,6 @@ graph schema {
 	project -- package [taillabel="admssw:project" headlabel="doap:release"];
 	project -- maintainer [headlabel="doap:maintainer\ndoap:developer"];
 	project -- repository [headlabel="doap:repository"];
-	package -- release [taillabel="dcterms:isPartOf" headlabel="admssw:includedAsset"];
+	package -- release [headlabel="dcterms:isPartOf" taillabel="admssw:includedAsset"];
 }
 
