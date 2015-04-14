@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Semantic Debian</h1>
+    <h2>The Dataset</h2>
+    <p>The Semantic Debian dataset currently contains details on debian
+    releases, packaging projects, package releases, maintainer profiles and VCS
+    repositories. It uses the ADMSSW, DOAP and FOAF RDF vocabularies to
+    represent the data contained in the graph. An overview of the relations
+    between these objects is shown below:</p>
+    <img src="/static/img/schema.png" style="width:100%; border: 1px solid #555;" alt="Overview of mappings between objects in the graph">
+    <h3>Debian Releases</h3>
+    <p><i>URLs: http://rdf.debian.net/release/&lt;release-name&gt;</i></p>
+    <h3>Packaging Projects</h3>
+    <p><i>URLs: http://rdf.debian.net/project/&lt;source-name&gt;</i></p>
+    <h3>Package Releases</h3>
+    <p><i>URLs: http://rdf.debian.net/package/&lt;source-name&gt;_&lt;debversion&gt;</i></p>
+    <h3>VCS Repositories</h3>
+    <p><i>URLs: http://rdf.debian.net/repository/&lt;source-name&gt;</i></p>
+    <h3>Maintainer Profiles</h3>
+    <p><i>URLs: http://rdf.debian.net/maintainer/&lt;url-encoded-email-address&gt;</i></p>
+    <br />
+{% endblock content %}

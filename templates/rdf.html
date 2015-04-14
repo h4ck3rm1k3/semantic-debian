@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
-<ul>
 	<h1>Semantic Debian</h1>
 	<h2><a href="{{ resource.uri }}" title="{{ resource.uri }}" style="color: #000; border-bottom: 1px dotted #000; text-decoration: none;">{{ resource.name }}</a></h2>
 	<p>{{ resource.description }}</p>
@@ -12,5 +11,4 @@
 		</tr>
 		{% endfor %}
 	</table>
-</ul>
 {% endblock content %}

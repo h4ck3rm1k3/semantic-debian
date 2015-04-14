@@ -1,0 +1,20 @@
+graph schema {
+
+	ranksep=1
+	nodesep=1
+	node [shape=record];
+
+	debian [label="{The Debian Project|admssw:SoftwareProject|http://rdf.debian.net/debian}"];
+	project [label="{Debian Packaging Project|admssw:SoftwareProject|http://rdf.debian.net/project/\<source-name\>}"];
+	package [label="{Debian Source Package Release|admssw:SoftwareRelease|http://rdf.debian.net/maintainer/\<source-name\>_\<debversion\>}"];
+	maintainer [label="{Debian Contributor or Team|foaf:Agent|http://rdf.debian.net/maintainer/\<url-encoded-email-address\>}"];
+	repository [label="{Debian Packaging VCS Repository|doap:Repository|http://rdf.debian.net/repository/\<source-name\>}"];
+	release [label="{Debian Release|admssw:SoftwareRelease|http://rdf.debian.net/release/\<source-name\>_\<debversion\>}"];
+
+	debian -- release [taillabel="admssw:project" headlabel="doap:release"];
+	project -- package [taillabel="admssw:project" headlabel="doap:release"];
+	project -- maintainer [headlabel="doap:maintainer\ndoap:developer"];
+	project -- repository [headlabel="doap:repository"];
+	package -- release [headlabel="dcterms:isPartOf" taillabel="admssw:includedAsset"];
+}
+

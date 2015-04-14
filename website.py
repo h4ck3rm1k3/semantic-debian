@@ -116,6 +116,10 @@ def homepage():
 def usage():
     return render_template("usage.html", title="Usage Documentation", breadcrumb=' / usage')
 
+@app.route("/dataset")
+def dataset():
+    return render_template("dataset.html", title="Dataset Documentation", breadcrumb=' / dataset')
+
 ########### PACKAGE PAGES ################
 
 @app.route("/package/<name>.ttl")
