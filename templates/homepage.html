@@ -1,14 +1,39 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>Semantic Debian</h1>
+
+<a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework">
+<img border="0" src="/static/img/rdf_w3c_icon.128.gif" style="float: right;"
+alt="RDF Resource Description Framework Icon"/></a>
+
 <p><b>Semantic Debian</b> is a work-in-progress project to provide a
 Semantic Web frontend to Ultimate Debian Database. This interface will replace
 the deprecated interface provided by the old package tracking system.</p>
-<h2>Initial goals:</h2>
+
+<h2>The Dataset</h2>
+
+<p>The dataset is still being actively developed, and the URIs and vocabularies
+in use should be considered volatile. For more details on how the dataset is
+structured, see the <a href="/dataset">dataset documentaion</a> page.</p>
+
+<p>The dataset currently contains data about:</p>
+
 <ul>
-   <li>Recreate the outputs provided by the old package tracker (<a href="http://bugs.debian.org/685605">#685605</a>)</li>
-   <li>Look at integration with (or replacement of) <a href="http://webid.debian.net/">webid.debian.net</a></li>
-   <li>RDF/XML, Turtle and HTML+RDFa outputs based on HTTP content negotiation</li>
+	<li>Debian releases</li>
+	<li>Packaging projects</li>
+	<li>Package releases</li>
+	<li>Maintainer profiles</li>
+	<li>VCS repositories</li>
 </ul>
+
+<h2>Web Interface</h2>
+
+<p>You can <a href="/debian">browse the dataset</a> online using the HTML
+interface. Content negotiation is available for all semantic resources in the
+dataset (unless it's currently broken - again, still being actively developed)
+and so you can also retrieve resource data as Turtle or RDF/XML. See the
+<a href="/usage#cn">content negotiation examples</a> for more details about
+using content negotiation.</p>
+
 {% endblock content %}
 

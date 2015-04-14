@@ -38,12 +38,23 @@ def maintainer_view(uri):
 def package_view(uri):
     g = Graph()
     g.namespace_manager = namespace_manager
-    p = graph.resource(uri)
+    for triple in graph.triples( (uri, None, None) ):
+        g.add(triple)
     return g
 
 def release_view(uri):
     g = Graph()
     g.namespace_manager = namespace_manager
-    p = graph.resource(uri)
+    for triple in graph.triples( (uri, None, None) ):
+        g.add(triple)
+    return g
+
+def debian_view():
+    uri = URIRef('http://rdf.debian.net/debian')
+    g = Graph()
+    g.namespace_manager = namespace_manager
+    for triple in graph.triples( (uri, None, None) ):
+        print triple
+        g.add(triple)
     return g
 

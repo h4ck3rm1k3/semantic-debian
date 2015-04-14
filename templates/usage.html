@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Semantic Debian</h1>
+    <h2>Usage</h2>
+    <p>The webserver on <tt>rdf.debian.net</tt> uses content negotiation to
+    return a 303 redirect to either an HTML+RDFa, Turtle or RDF/XML
+    representation of the requested resource.</p>
+    <p>Content negotiation is based on the HTTP <tt>Accept</tt> header used
+    when requesting a resource. The current implementation will return Turtle
+    if <tt>text/turtle</tt> is present in the <tt>Accept</tt> header, then
+    RDF/XML if <tt>application/rdf+xml</tt> is present in the <tt>Accept</tt>
+    header and fall back to HTML+RDFa if neither are present in the
+    <tt>Accept</tt> header.</p>
+    <h3>Simple Examples</h3>
+    <p>For some tools that are not specifically designed for the semantic web, like curl and wget, it is necessary to provide the <tt>Accept</tt> header manually. For other tools, like rapper and semantic web browser, it will not normally be required as these tools already expect content negotiation.</p>
+    <dl>
+	    <dt>wget</dt>
+	    <dd><tt>wget -O - --header="Accept: text/turtle" http://rdf.debian.net/debian 2>/dev/null</tt></dd>
+	    <dt>curl</dt>
+	    <dd><tt>curl -L --header="Accept: application/rdf+xml" http://rdf.debian.net/project/direwolf</tt></dd>
+	    <dt>rapper</dt>
+	    <dd><tt>rapper http://rdf.debian.net/release/experimental</tt></dd>
+	    <dt>Q&amp;D RDF Browser</dt>
+	    <dd><a href="http://graphite.ecs.soton.ac.uk/browser/?uri=http%3A%2F%2Frdf.debian.net%2Fmaintainer%2Firl%2540fsfe.org">http://graphite.ecs.soton.ac.uk/browser/?uri=http://rdf.debian.net/maintainer/irl%40fsfe.org</a>
+    </dl>
+    <br />
+{% endblock content %}

@@ -50,6 +50,7 @@ g.namespace_manager = namespace_manager
 debian = URIRef('http://rdf.debian.net/debian')
 g.add( (debian, RDF.type, ADMSSW.SoftwareProject) )
 g.add( (debian, DOAP.name, Literal('The Debian Project')) )
+g.add( (debian, DOAP.description, Literal('Debian is a free operating system (OS) for your computer. An operating system is the set of basic programs and utilities that make your computer run. Debian provides more than a pure OS: it comes with over 37500 packages, precompiled software bundled up in a nice format for easy installation on your machine.')) )
 g.add( (debian, DOAP.homepage, URIRef('http://www.debian.org/')) )
 
 # Generate all release triples
@@ -59,6 +60,8 @@ releases = [x[0] for x in udd.query("SELECT DISTINCT release FROM sources")]
 for release in releases:
     g.add( (RELEASE[release], RDF.type, ADMSSW.SoftwareRelease) )
     g.add( (RELEASE[release], DOAP.name, Literal("Debian " + release)) )
+    g.add( (RELEASE[release], ADMSSW.project, debian) )
+    g.add( (debian, DOAP.release, RELEASE[release]) )
 
 # Generate all project triples
 

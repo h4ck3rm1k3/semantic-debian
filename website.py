@@ -13,6 +13,7 @@ from semantic_debian.core.namespaces import DOAP
 from semantic_debian.core.store import graph
 from semantic_debian.views import project_view, maintainer_view
 from semantic_debian.views import release_view, package_view
+from semantic_debian.views import debian_view
 
 app = Flask(__name__)
 
@@ -111,9 +112,9 @@ def maintainer(email):
 def homepage():
     return render_template("homepage.html")
 
-@app.route("/urls")
-def urls():
-    return render_template("urls.html", title="URLs", breadcrumb=' / urls')
+@app.route("/usage")
+def usage():
+    return render_template("usage.html", title="Usage Documentation", breadcrumb=' / usage')
 
 ########### PACKAGE PAGES ################
 
@@ -168,6 +169,33 @@ def release(name):
         return redirect(url_for('release_turtle', name=name), code=303)
     if f == 'html':
         return redirect(url_for('release_html', name=name), code=303)
+
+########### RELEASE PAGES ################
+
+@app.route("/debian.ttl")
+def debian_turtle():
+    v = debian_view()
+    return Response(v.serialize(format='turtle'), mimetype="text/turtle")
+
+@app.route("/debian.xml")
+def debian_rdfxml():
+    v = debian_view()
+    return Response(v.serialize(format='xml'), mimetype="application/rdf+xml")
+
+@app.route("/debian.html")
+def debian_html():
+    resource = resource_template('http://rdf.debian.net/debian')
+    return render_template('rdf.html', resource=resource, title="The Debian Project", breadcrumb=" / browse / debian")
+
+@app.route("/debian")
+def debian():
+    f = negotiate(request.headers.get('Accept'))
+    if f == 'xml':
+        return redirect(url_for('debian_rdfxml'), code=303)
+    if f == 'ttl':
+        return redirect(url_for('debian_turtle'), code=303)
+    if f == 'html':
+        return redirect(url_for('debian_html'), code=303)
 
 if __name__ == "__main__":
     app.run(debug=True)
