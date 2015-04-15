@@ -1,6 +1,6 @@
 
 from rdflib import Graph
-from semantic_debian.core.namespaces import namespace_manager
+from semantic_debian.namespaces import namespace_manager
 
 if 'graph' not in vars():
     graph = Graph()

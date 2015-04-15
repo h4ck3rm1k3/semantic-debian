@@ -1,1 +1,2 @@
-__all__ = ['core', 'resource']
+__all__ = ['conneg', 'html', 'namespaces', 'rdf', 'rdfviews', 'store', 'udd']
+

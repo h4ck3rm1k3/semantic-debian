@@ -1,9 +1,16 @@
 
 from rdflib import Graph, URIRef
 
-from semantic_debian.core.store import graph
-from semantic_debian.core.namespaces import namespace_manager
-from semantic_debian.core.namespaces import DOAP, SCHEMA
+from semantic_debian.store import graph
+from semantic_debian.namespaces import namespace_manager
+from semantic_debian.namespaces import DOAP
+
+def get_view(uri):
+    split_uri = uri.split('/')
+    try:
+        return views[split_uri[3]]
+    except KeyError:
+        return default_view
 
 def project_view(uri):
     g = Graph()
@@ -25,36 +32,12 @@ def project_view(uri):
             g.add(triple)
     return g
 
-def maintainer_view(uri):
-    g = Graph()
-    g.namespace_manager = namespace_manager
-    p = graph.resource(uri)
-    for triple in graph.triples( (uri, None, None) ):
-        g.add(triple)
-    for s, p, o in graph.triples( (None, SCHEMA.contributor, p.identifier) ):
-        g.add( (s, p, o) )
-    return g
-
-def package_view(uri):
+def default_view(uri):
     g = Graph()
     g.namespace_manager = namespace_manager
     for triple in graph.triples( (uri, None, None) ):
         g.add(triple)
     return g
 
-def release_view(uri):
-    g = Graph()
-    g.namespace_manager = namespace_manager
-    for triple in graph.triples( (uri, None, None) ):
-        g.add(triple)
-    return g
-
-def debian_view():
-    uri = URIRef('http://rdf.debian.net/debian')
-    g = Graph()
-    g.namespace_manager = namespace_manager
-    for triple in graph.triples( (uri, None, None) ):
-        print triple
-        g.add(triple)
-    return g
+views = {'project': project_view,}
 

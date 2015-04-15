@@ -1,112 +1,66 @@
 
 from flask import Flask, request, redirect, url_for, Response, render_template
+from werkzeug.routing import BaseConverter
 
-from rdflib import Graph
+from rdflib import URIRef
 from rdflib.resource import Resource
 
 from urllib import quote
 
-from semantic_debian.core.namespaces import namespace_manager
-from semantic_debian.core.namespaces import PROJECT, MAINTAINER
-from semantic_debian.core.namespaces import RELEASE, PACKAGE
-from semantic_debian.core.namespaces import DOAP
-from semantic_debian.core.store import graph
-from semantic_debian.views import project_view, maintainer_view
-from semantic_debian.views import release_view, package_view
-from semantic_debian.views import debian_view
+from semantic_debian.namespaces import DOAP
+from semantic_debian.store import graph
+from semantic_debian.conneg import negotiate, get_serializer, get_mime_type
+from semantic_debian.html import html_response
+from semantic_debian.rdf import rdf_response
+
+class RegexConverter(BaseConverter):
+    def __init__(self, url_map, *items):
+        super(RegexConverter, self).__init__(url_map)
+        self.regex = items[0]
 
 app = Flask(__name__)
+app.url_map.converters['regex'] = RegexConverter
 
-def negotiate(accept):
-    if "text/turtle" in accept:
-        return "ttl"
-    if "application/rdf+xml" in accept:
-        return "xml"
-    return "html"
+## Top Level Resource
 
-def resource_template(uri):
-    r = graph.resource(uri)
-    name = uri
-    description = "No description available"
-    for x in r[DOAP.description]:
-        description = x
-        break
-    for x in r[DOAP.name]:
-        name = x
-        break
-    p_o = []
-    for p, o in r.predicate_objects():
-        if isinstance(o, Resource):
-            o_type = "resource"
-            try:
-                o_qname = o.qname() if not o.qname().startswith('ns') else o.identifier
-            except:
-                o_qname = o.identifier
-            o_value = o.identifier
-        else:
-            o_type = "literal"
-            o_qname = None
-            o_value = str(o)
-        p_o.append( (str(p.identifier), p.qname(), o_type, o_qname, o_value) )
-    p_o.sort(key = lambda t: t[1])
-    return {'uri': uri,
-            'name': name,
-            'description': description,
-            'p_o': p_o}
+@app.route('/debian.<regex("ttl|xml|n3"):ext>')
+def top_level_resource_rdf(ext):
+    return rdf_response('http://rdf.debian.net/debian',
+            get_serializer(ext), get_mime_type(ext))
 
-########### PROJECT PAGES ################
+@app.route("/debian.html")
+def top_level_resource_html():
+    return html_response('http://rdf.debian.net/debian')
 
-@app.route("/project/<name>.ttl")
-def project_turtle(name):
-    v = project_view(PROJECT[name])
-    return Response(v.serialize(format='turtle'), mimetype="text/turtle")
+@app.route("/debian")
+def top_level_resource():
+    ext = negotiate(request.headers.get('Accept'))
+    if ext == 'html':
+        return redirect(url_for('top_level_resource_html'), code=303)
+    return redirect(url_for('top_level_resource_rdf', ext=ext), code=303)
 
-@app.route("/project/<name>.xml")
-def project_rdfxml(name):
-    v = project_view(PROJECT[name])
-    return Response(v.serialize(format='xml'), mimetype="application/rdf+xml")
+## Second Level Resources
 
-@app.route("/project/<name>.html")
-def project_html(name):
-    resource = resource_template(PROJECT[name])
-    return render_template('rdf.html', resource=resource, title="%s (packaging project)" % (name,), breadcrumb=" / browse / project / %s" % (name,))
+@app.route('/<resource>/<name>.<regex("ttl|xml|n3"):ext>')
+def resource_rdf(resource, name, ext):
+    return rdf_response('http://rdf.debian.net/' + resource + '/' + quote(name),
+            get_serializer(ext), get_mime_type(ext))
 
-@app.route("/project/<name>")
-def project(name):
-    f = negotiate(request.headers.get('Accept'))
-    if f == 'xml':
-        return redirect(url_for('project_rdfxml', name=name), code=303)
-    if f == 'ttl':
-        return redirect(url_for('project_turtle', name=name), code=303)
-    if f == 'html':
-        return redirect(url_for('project_html', name=name), code=303)
+@app.route("/<resource>/<name>.html")
+def resource_html(resource, name):
+    uri = 'http://rdf.debian.net/' + resource + '/' + quote(name)
+    return html_response(uri)
 
-########### MAINTAINER PAGES ################
+@app.route("/<resource>/<name>")
+def resource(resource, name):
+    ext = negotiate(request.headers.get('Accept'))
+    if ext == 'html':
+        return redirect(url_for('resource_html', resource=resource,
+            name=name), code=303)
+    return redirect(url_for('resource_rdf', resource=resource,
+        name=name, ext=ext), code=303)
 
-@app.route("/maintainer/<email>.ttl")
-def maintainer_turtle(email):
-    v = maintainer_view(MAINTAINER[quote(email)])
-    return Response(v.serialize(format='turtle'), mimetype="text/turtle")
-
-@app.route("/maintainer/<email>.xml")
-def maintainer_rdfxml(email):
-    v = maintainer_view(MAINTAINER[quote(email)])
-    return Response(v.serialize(format='xml'), mimetype="application/rdf+xml")
-
-@app.route("/maintainer/<email>.html")
-def maintainer_html(email):
-    resource = resource_template(MAINTAINER[quote(email)])
-    return render_template('rdf.html', resource=resource, title="%s (Debian contributor)" % (email,), breadcrumb=" / browse / project / %s" % (email,))
-
-@app.route("/maintainer/<email>")
-def maintainer(email):
-    f = negotiate(request.headers.get('Accept'))
-    if f == 'xml':
-        return redirect(url_for('maintainer_rdfxml', email=email), code=303)
-    if f == 'ttl':
-        return redirect(url_for('maintainer_turtle', email=email), code=303)
-    if f == 'html':
-        return redirect(url_for('maintainer_html', email=email), code=303)
+## Static Pages
 
 @app.route("/")
 def homepage():
@@ -119,87 +73,6 @@ def usage():
 @app.route("/dataset")
 def dataset():
     return render_template("dataset.html", title="Dataset Documentation", breadcrumb=' / dataset')
-
-########### PACKAGE PAGES ################
-
-@app.route("/package/<name>.ttl")
-def package_turtle(name):
-    v = package_view(PACKAGE[name])
-    return Response(v.serialize(format='turtle'), mimetype="text/turtle")
-
-@app.route("/package/<name>.xml")
-def package_rdfxml(name):
-    v = package_view(PACKAGE[name])
-    return Response(v.serialize(format='xml'), mimetype="application/rdf+xml")
-
-@app.route("/package/<name>.html")
-def package_html(name):
-    resource = resource_template(PACKAGE[name])
-    return render_template('rdf.html', resource=resource, title="%s (package release)" % (name,), breadcrumb=" / browse / package / %s" % (name,))
-
-@app.route("/package/<name>")
-def package(name):
-    f = negotiate(request.headers.get('Accept'))
-    if f == 'xml':
-        return redirect(url_for('package_rdfxml', name=name), code=303)
-    if f == 'ttl':
-        return redirect(url_for('package_turtle', name=name), code=303)
-    if f == 'html':
-        return redirect(url_for('package_html', name=name), code=303)
-
-########### RELEASE PAGES ################
-
-@app.route("/release/<name>.ttl")
-def release_turtle(name):
-    v = release_view(RELEASE[name])
-    return Response(v.serialize(format='turtle'), mimetype="text/turtle")
-
-@app.route("/release/<name>.xml")
-def release_rdfxml(name):
-    v = release_view(RELEASE[name])
-    return Response(v.serialize(format='xml'), mimetype="application/rdf+xml")
-
-@app.route("/release/<name>.html")
-def release_html(name):
-    resource = resource_template(RELEASE[name])
-    return render_template('rdf.html', resource=resource, title="%s (Debian release)" % (name,), breadcrumb=" / browse / release / %s" % (name,))
-
-@app.route("/release/<name>")
-def release(name):
-    f = negotiate(request.headers.get('Accept'))
-    if f == 'xml':
-        return redirect(url_for('release_rdfxml', name=name), code=303)
-    if f == 'ttl':
-        return redirect(url_for('release_turtle', name=name), code=303)
-    if f == 'html':
-        return redirect(url_for('release_html', name=name), code=303)
-
-########### RELEASE PAGES ################
-
-@app.route("/debian.ttl")
-def debian_turtle():
-    v = debian_view()
-    return Response(v.serialize(format='turtle'), mimetype="text/turtle")
-
-@app.route("/debian.xml")
-def debian_rdfxml():
-    v = debian_view()
-    return Response(v.serialize(format='xml'), mimetype="application/rdf+xml")
-
-@app.route("/debian.html")
-def debian_html():
-    resource = resource_template('http://rdf.debian.net/debian')
-    return render_template('rdf.html', resource=resource, title="The Debian Project", breadcrumb=" / browse / debian")
-
-@app.route("/debian")
-def debian():
-    f = negotiate(request.headers.get('Accept'))
-    if f == 'xml':
-        return redirect(url_for('debian_rdfxml'), code=303)
-    if f == 'ttl':
-        return redirect(url_for('debian_turtle'), code=303)
-    if f == 'html':
-        return redirect(url_for('debian_html'), code=303)
 
 if __name__ == "__main__":
     app.run(debug=True)
