@@ -5,26 +5,26 @@ from rdflib import Graph, Literal, Namespace, URIRef, BNode
 from urllib import quote
 from hashlib import sha1
 
-from semantic_debian.core.udd import udd
-from semantic_debian.core.namespaces import namespace_manager
-from semantic_debian.core.namespaces import RDF
-from semantic_debian.core.namespaces import RDFS
-from semantic_debian.core.namespaces import OWL
-from semantic_debian.core.namespaces import DCTERMS
-from semantic_debian.core.namespaces import FOAF
-from semantic_debian.core.namespaces import DOAP
-from semantic_debian.core.namespaces import SCHEMA
-from semantic_debian.core.namespaces import ADMS
-from semantic_debian.core.namespaces import ADMSSW
-from semantic_debian.core.namespaces import SPDX
-from semantic_debian.core.namespaces import PROJECT
-from semantic_debian.core.namespaces import PACKAGE
-from semantic_debian.core.namespaces import RELEASE
-from semantic_debian.core.namespaces import MAINTAINER
-from semantic_debian.core.namespaces import TRACKER
-from semantic_debian.core.namespaces import SRCPKG
-from semantic_debian.core.namespaces import SCREENSHOTS
-from semantic_debian.core.namespaces import DDPO
+from semantic_debian.udd import udd
+from semantic_debian.namespaces import namespace_manager
+from semantic_debian.namespaces import RDF
+from semantic_debian.namespaces import RDFS
+from semantic_debian.namespaces import OWL
+from semantic_debian.namespaces import DCTERMS
+from semantic_debian.namespaces import FOAF
+from semantic_debian.namespaces import DOAP
+from semantic_debian.namespaces import SCHEMA
+from semantic_debian.namespaces import ADMS
+from semantic_debian.namespaces import ADMSSW
+from semantic_debian.namespaces import SPDX
+from semantic_debian.namespaces import PROJECT
+from semantic_debian.namespaces import PACKAGE
+from semantic_debian.namespaces import RELEASE
+from semantic_debian.namespaces import MAINTAINER
+from semantic_debian.namespaces import TRACKER
+from semantic_debian.namespaces import SRCPKG
+from semantic_debian.namespaces import SCREENSHOTS
+from semantic_debian.namespaces import DDPO
 
 # Helpful things
 rfc822_extract = re.compile('^(.*) <(.*)>$')
@@ -50,7 +50,7 @@ g.namespace_manager = namespace_manager
 debian = URIRef('http://rdf.debian.net/debian')
 g.add( (debian, RDF.type, ADMSSW.SoftwareProject) )
 g.add( (debian, DOAP.name, Literal('The Debian Project')) )
-g.add( (debian, DOAP.description, Literal('Debian is a free operating system (OS) for your computer. An operating system is the set of basic programs and utilities that make your computer run. Debian provides more than a pure OS: it comes with over 37500 packages, precompiled software bundled up in a nice format for easy installation on your machine.')) )
+g.add( (debian, DOAP.description, Literal('Debian is a free operating system (OS) for your computer. An operating system is the set of basic programs and utilities that make your computer run. Debian provides more than a pure OS: it comes with over 37500 packages, precompiled software bundled up in a nice format for easy installation on your machine.', lang="en")) )
 g.add( (debian, DOAP.homepage, URIRef('http://www.debian.org/')) )
 
 # Generate all release triples
@@ -58,14 +58,20 @@ g.add( (debian, DOAP.homepage, URIRef('http://www.debian.org/')) )
 releases = [x[0] for x in udd.query("SELECT DISTINCT release FROM sources")]
 
 for release in releases:
+    if "-" in release:
+        parent = RELEASE[release.split("-")[0]]
+        g.add( (parent, ADMSSW.includedAsset, RELEASE[release]) )
+        g.add( (RELEASE[release], DCTERMS.isPartOf, parent) )
+        g.add( (RELEASE[release], ADMSSW.project, debian) )
+    else:
+        g.add( (debian, DOAP.release, RELEASE[release]) )
+        g.add( (RELEASE[release], ADMSSW.project, debian) )
     g.add( (RELEASE[release], RDF.type, ADMSSW.SoftwareRelease) )
     g.add( (RELEASE[release], DOAP.name, Literal("Debian " + release)) )
-    g.add( (RELEASE[release], ADMSSW.project, debian) )
-    g.add( (debian, DOAP.release, RELEASE[release]) )
 
 # Generate all project triples
 
-packages = udd.query("SELECT source, version, release, maintainer_name, maintainer_email, uploaders, vcs_type, vcs_url, vcs_browser FROM sources")
+packages = udd.query("SELECT source, version, release, maintainer_name, maintainer_email, uploaders, vcs_type, vcs_url, vcs_browser FROM sources WHERE section='hamradio'")
 
 for package in packages:
     # Break out uploaders
@@ -78,7 +84,7 @@ for package in packages:
    
     g.add( (PROJECT[package[0]], RDF.type, ADMSSW.SoftwareProject) )
     g.add( (PROJECT[package[0]], DOAP.name, Literal("Debian " + package[0] + " packaging")) )
-    g.add( (PROJECT[package[0]], DOAP.description, Literal("Maintenance of the " + package[0] + " source package in Debian")) )
+    g.add( (PROJECT[package[0]], DOAP.description, Literal("Maintenance of the " + package[0] + " source package in Debian", lang="en")) )
 
     g.add( (PROJECT[package[0]], DOAP.homepage, TRACKER[package[0]]) )
 
