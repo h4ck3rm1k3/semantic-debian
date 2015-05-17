@@ -1,8 +1,9 @@
+#!/usr/bin/env python3
 
 import re
 
 from rdflib import Graph, Literal, Namespace, URIRef, BNode
-from urllib import quote
+from urllib.parse import quote
 from hashlib import sha1
 
 from semantic_debian.udd import udd
@@ -129,7 +130,7 @@ for maintainer in maintainers:
     g.add( (MAINTAINER[quote(email)], RDF.type, FOAF.Agent) )
     g.add( (MAINTAINER[quote(email)], FOAF.name, Literal(name)) )
     g.add( (MAINTAINER[quote(email)], FOAF.mbox, URIRef('mailto:' + email)) )
-    g.add( (MAINTAINER[quote(email)], FOAF.mbox_sha1sum, Literal(sha1('mailto:' + email).hexdigest())) )
+    g.add( (MAINTAINER[quote(email)], FOAF.mbox_sha1sum, Literal(sha1(('mailto:' + email).encode()).hexdigest())) )
     g.add( (MAINTAINER[quote(email)], FOAF.homepage, DDPO[quote(email)]) )
 
 ## Generate all repository triples
@@ -153,12 +154,12 @@ for r in repositories:
         g.add( (repository, RDF.type, repotype[r['vcs_type']]) )
         if r['vcs_url'] != None:
             if " " in r['vcs_url'] or "<" in r['vcs_url'] or ">" in r['vcs_url'] or "{" in r['vcs_url']:
-                print "W: VCS URL for %s (%s) contains a bad character, ignoring this URL" % (r['source'], r['vcs_url'],)
+                print("W: VCS URL for {} ({}) contains a bad character, ignoring this URL".format(r['source'], r['vcs_url'],))
             else:
                 g.add( (repository, DOAP['anon-root'], URIRef(r['vcs_url'])) )
         if r['vcs_browser'] != None:
             if " " in r['vcs_browser'] or "<" in r['vcs_browser'] or ">" in r['vcs_browser'] or "{" in r['vcs_browser']:
-                print "W: VCS Browser URL for %s (%s) contains a bad character, ignoring this URL" % (r['source'], r['vcs_browser'],)
+                print("W: VCS Browser URL for {} ({}) contains a bad character, ignoring this URL".format(r['source'], r['vcs_browser'],))
             else:
                 g.add( (repository, DOAP.browse, URIRef(r['vcs_browser'])) )
         g.add( (PROJECT[r['source']], DOAP.repository, repository ) )
@@ -174,7 +175,7 @@ releases = [{'source': x[0],
 for r in releases:
     g.add( (RELEASE[r['release']], ADMSSW.includedAsset, PACKAGE[r['source'] + "_" + r['version']]) )
     g.add( (PACKAGE[r['source'] + "_" + r['version']], ADMSSW.project, PROJECT['source']) )
-    g.add( (PROJECT[r['source'], DOAP.project, PACKAGE[r['source'] + "_" + r['version']]) )
+    g.add( (PROJECT[r['source']], DOAP.project, PACKAGE[r['source'] + "_" + r['version']]) )
     g.add( (PACKAGE[r['source'] + "_" + r['version']], RDF.type, ADMSSW.SoftwareRelease) )
     g.add( (PACKAGE[r['source'] + "_" + r['version']], DCTERMS.isPartOf, RELEASE[r['release']]) )
     g.add( (PACKAGE[r['source'] + "_" + r['version']], DOAP.revision, Literal(r['version'])) )

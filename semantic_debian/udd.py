@@ -14,9 +14,9 @@ class UltimateDebianDatabase:
                         " user=" + username + \
                         " host=" + host + \
                         " password=" + password)
-            print "I: Connected to Ultimate Debian Database"
+            print("I: Connected to Ultimate Debian Database")
         except:
-            print "E: Error connecting to Ultimate Debian Database"
+            print("E: Error connecting to Ultimate Debian Database")
             raise
         self.conn.set_client_encoding('utf8')
 
