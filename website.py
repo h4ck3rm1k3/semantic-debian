@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 
 from flask import Flask, request, redirect, url_for, Response, render_template
 from werkzeug.routing import BaseConverter
@@ -5,7 +6,7 @@ from werkzeug.routing import BaseConverter
 from rdflib import URIRef
 from rdflib.resource import Resource
 
-from urllib import quote
+from urllib.parse import quote
 
 from semantic_debian.namespaces import DOAP
 from semantic_debian.store import graph
