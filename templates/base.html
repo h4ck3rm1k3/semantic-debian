@@ -1,4 +1,17 @@
-<html>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+     prefix="adms: http://www.w3.org/ns/adms#
+             admssw: http://purl.org/adms/sw/
+             dcterms: http://purl.org/dc/terms/
+             doap: http://usefulinc.com/ns/doap#
+             foaf: http://xmlns.com/foaf/0.1/
+             owl: http://www.w3.org/2002/07/owl#
+             rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+             rdfs: http://www.w3.org/2000/01/rdf-schema#
+             schema: http://schema.org/
+             spdx: http://www.spdx.org/rdf/terms#
+             xml: http://www.w3.org/XML/1998/namespace
+             xsd: http://www.w3.org/2001/XMLSchema#">
 <head>
 	<title>{% if title %}{{ title }} &middot; {% endif %}Semantic Debian</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -40,17 +53,29 @@
 	{% endblock content %}
 </div>
 
+<div id="footer">
+
 {% if resource %}
 <menu type="context" id="alternative-menu">
-	<menuitem onclick="window.location = '{{ resource.uri }}.xml'" label="Get as RDF/XML"></menuitem>
-	<menuitem onclick="window.location = '{{ resource.uri }}.ttl'" label="Get as Turtle"></menuitem>
-	<menuitem onclick="window.location = '{{ resource.uri }}.n3'" label="Get as N3"></menuitem>
+	<menu label="Get alternative format">
+		<menuitem onclick="window.location = '{{ resource.uri }}.xml'" label="Get as RDF/XML"></menuitem>
+		<menuitem onclick="window.location = '{{ resource.uri }}.ttl'" label="Get as Turtle"></menuitem>
+		<menuitem onclick="window.location = '{{ resource.uri }}.n3'" label="Get as N3"></menuitem>
+	</menu>
+	<menu label="Extract RDFa">
+		<menuitem onclick="window.location = 'http://www.w3.org/2012/pyRdfa/extract?uri={{ resource.uri | urlencode }}&format=xml&rdfagraph=output&vocab_expansion=false&rdfa_lite=false&embedded_rdf=true&space_preserve=true&vocab_cache=true&vocab_cache_report=false&vocab_cache_refresh=false'" label="As RDF/XML"></menuitem>
+		<menuitem onclick="window.location = 'http://www.w3.org/2012/pyRdfa/extract?uri={{ resource.uri | urlencode }}&format=turtle&rdfagraph=output&vocab_expansion=false&rdfa_lite=false&embedded_rdf=true&space_preserve=true&vocab_cache=true&vocab_cache_report=false&vocab_cache_refresh=false'" label="As Turtle"></menuitem>
+		<menuitem onclick="window.location = 'http://www.w3.org/2012/pyRdfa/extract?uri={{ resource.uri | urlencode }}&format=json&rdfagraph=output&vocab_expansion=false&rdfa_lite=false&embedded_rdf=true&space_preserve=true&vocab_cache=true&vocab_cache_report=false&vocab_cache_refresh=false'" label="As JSON-LD"></menuitem>
+		<menuitem onclick="window.location = 'http://www.w3.org/2012/pyRdfa/extract?uri={{ resource.uri | urlencode }}&format=nt&rdfagraph=output&vocab_expansion=false&rdfa_lite=false&embedded_rdf=true&space_preserve=true&vocab_cache=true&vocab_cache_report=false&vocab_cache_refresh=false'" label="As N-Triples"></menuitem>
+	</menu>
 </menu>
+
+<p>Alternative formats: <a href="{{ resource.uri }}.xml">RDF/XML</a>, <a href="{{ resource.uri }}.ttl">Turtle</a> or <a href="{{ resource.uri }}.n3">N3</a>.</p>
+
+<hr />
+
 {% endif %}
 
-<div id="footer">
-	{% if resource %}
-	<p>Alternative formats: <a href="{{ resource.uri }}.xml">RDF/XML</a>, <a href="{{ resource.uri }}.ttl">Turtle</a> or <a href="{{ resource.uri }}.n3">N3</a>.</p><hr />{% endif %}
 <div id="fineprint">
     <p>
     This service is still a work in progress, please expect it to be broken.

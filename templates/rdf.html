@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+	<div about="{{ resource.uri }}">
 	<h1>Semantic Debian</h1>
 	<h2><a href="{{ resource.uri }}" title="{{ resource.uri }}" style="color: #000; border-bottom: 1px dotted #000; text-decoration: none;">{{ resource.name }}</a></h2>
 	<p>{{ resource.description }}</p>
@@ -7,8 +8,9 @@
 		{% for predicate_uri, predicate_qname, object_type, object_qname, object_value in resource.p_o %}
 		<tr>
 			<td><a href="{{ predicate_uri }}">{{ predicate_qname }}</a></td>
-			<td>{% if object_type == "literal" %}{{ object_value }}{% else %}<a href="{{ object_value }}">{{ object_qname }}</a>{% endif %}</td>
+			<td>{% if object_type == "literal" %}<span property="{{ predicate_qname }}" content="{{ object_value }}">{{ object_value }}</span>{% else %}<a property="{{ predicate_qname }}" href="{{ object_value }}">{{ object_qname }}</a>{% endif %}</td>
 		</tr>
 		{% endfor %}
 	</table>
+	</div>
 {% endblock content %}
