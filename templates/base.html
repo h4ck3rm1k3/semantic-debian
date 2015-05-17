@@ -6,8 +6,13 @@
 <link href="/static/css/debian.css" rel="stylesheet" type="text/css">
 <link href="/static/css/rdf.css" rel="stylesheet" type="text/css">
 <link rel="shortcut icon" href="/static/img/favicon.ico">
+{% if resource %}
+<link rel="alternate" type="application/rdf+xml" href="{{ resource.uri }}.xml" title="RDF/XML Serialisation"/>
+<link rel="alternate" type="text/turtle" href="{{ resource.uri }}.ttl" title="Turtle Serialisation"/>
+<link rel="alternate" type="text/n3" href="{{ resource.uri }}.n3" title="N3 Serialisation"/>
+{% endif %}
 </head>
-<body>
+<body{% if resource %} contextmenu="alternative-menu"{% endif %}>
 <div id="header">
   <div id="wikisection">
     <p class="section"><a href="/" title="Semantic Debian">Semantic Debian</a></p>
@@ -35,7 +40,17 @@
 	{% endblock content %}
 </div>
 
+{% if resource %}
+<menu type="context" id="alternative-menu">
+	<menuitem onclick="window.location = '{{ resource.uri }}.xml'" label="Get as RDF/XML"></menuitem>
+	<menuitem onclick="window.location = '{{ resource.uri }}.ttl'" label="Get as Turtle"></menuitem>
+	<menuitem onclick="window.location = '{{ resource.uri }}.n3'" label="Get as N3"></menuitem>
+</menu>
+{% endif %}
+
 <div id="footer">
+	{% if resource %}
+	<p>Alternative formats: <a href="{{ resource.uri }}.xml">RDF/XML</a>, <a href="{{ resource.uri }}.ttl">Turtle</a> or <a href="{{ resource.uri }}.n3">N3</a>.</p><hr />{% endif %}
 <div id="fineprint">
     <p>
     This service is still a work in progress, please expect it to be broken.
