@@ -1,8 +1,5 @@
 
- * Use rdflib.resource
- * Make better use of semantic_debian.resource package
- * Improve the HTML generation and add RDFa markup
+ * Integrate Perl stuff properly
  * Resource search pages
- * URLs for maintainer, upstream, package, release, debian
+ * URLs for upstream, binary packages, derivatives
  * Documentation
-

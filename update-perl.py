@@ -1,7 +1,14 @@
 from debian import deb822
 import re
 
+from rdflib import Graph, Literal, Namespace
+from semantic_debian.namespaces import DCTERMS, PROJECT
+
 from semantic_debian.udd import udd
+
+CPANURI = Namespace("http://ontologi.es/cpan-data/dist/")
+
+g = Graph()
 
 print "I: Mapping binary packages to source packages"
 
@@ -50,11 +57,11 @@ with open('/tmp/PerlPackages') as debpkgs:
             for module in [x.split(" ")[0].strip() for x in modules]:
                 if module in cpan_modules.keys():
                     add_mapping(source, cpan_modules[module])
-                    print "D: %s is in CPAN distribution %s" % (source, cpan_modules[module],)
-                else:
-                    print "D: %s not in CPAN" % (module,)
 
 with open("perl.map", "w") as out:
     for source in mapping.keys():
+        for dist in mapping[source]:
+            g.add( ( PROJECT[source], DCTERMS.relation, CPANURI[dist + "/project"]))
         out.write(source + ": " + str(len(mapping[source])) + "   " + str(mapping[source]) + "\n")
 
+g.serialize("perl.ttl", format="turtle")
