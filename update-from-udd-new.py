@@ -177,9 +177,9 @@ print ("I: Generating triples from UDD for maintainers")
 for m in get_all_maintainers():
     add_maintainer_triples(g, m)
 
-print ("I: Generating triples from UDD for packages")
+#print ("I: Generating triples from UDD for packages")
+#
+#for p in get_all_packages():
+#    add_package_triples(g, p)
 
-for p in get_all_packages():
-    add_package_triples(g, p)
-
-g.serialize('semdeb.ttl', format="n3")
+g.serialize('semdeb.ttl', format="turtle")
