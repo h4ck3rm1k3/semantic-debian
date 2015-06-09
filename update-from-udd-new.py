@@ -133,6 +133,10 @@ print ("I: Importing triples from CPAN thingy")
 
 g.load("perl.ttl", format="turtle")
 
+print ("I: Importing triples from PyPI thingy")
+
+g.load("pypi.ttl", format="turtle")
+
 ### Reset namespaces
 g.namespace_manager = namespace_manager
 
